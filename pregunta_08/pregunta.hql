@@ -46,3 +46,14 @@ LOAD DATA LOCAL INPATH 'data1.csv' INTO TABLE tbl1;
 /*
     >>> Escriba su respuesta a partir de este punto <<<
 */
+DROP TABLE IF EXISTS data;
+CREATE TABLE data  AS
+SELECT c2, clave, valor 
+from tbl0
+LATERAL VIEW explode (c6) exploded_table;
+
+INSERT OVERWRITE DIRECTORY 'output'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+SELECT c2, sum(valor)
+from data
+GROUP BY c2;
